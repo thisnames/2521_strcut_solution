@@ -254,10 +254,17 @@ int main()
 	queue_print(&q);
 
 	QDataType temp;
-	while (!queue_empty(&q)) {
+	while (!queue_empty(&q))
+	{
 		queue_shift(&q, &temp);
 
 		pl("shift: %d", temp);
+
+		if (queue_front(&q, &x))
+			printf("front = %d\n", x);
+
+		if (queue_back(&q, &x))
+			printf("back = %d\n", x);
 
 		queue_print(&q);
 	}
