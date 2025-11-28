@@ -58,7 +58,7 @@ int queue_push(LinkedQueue* q, QDataType x)
 	{
 		// 链到旧尾结点之后
 		q->back->next = node;
-		//  更新尾指针
+		// 更新尾指针
 		q->back = node;
 	}
 

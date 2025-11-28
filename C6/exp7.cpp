@@ -30,7 +30,7 @@ void clear_screen()
 }
 
 // 打印标题
-int title()
+void title()
 {
 	pl(PROGRAM_TITLE);
 
@@ -50,8 +50,6 @@ int title()
 	pl(CONTENT_5);
 
 	pl(TTTLE_END_LINE);
-
-	return 0;
 }
 
 // 排队的卡号是否已经在队列中排队；存在返回1，否则返回0
@@ -71,10 +69,9 @@ void InQueue(LinkedQueue* lq)
 {
 	// 输入卡号
 	size_t car;
-	int result = get_sizet_input("请输入你的就诊卡号：", &car);
 
 	// 输入失败
-	if (result == 0)
+	if (!get_sizet_input("请输入你的就诊卡号：", &car))
 	{
 		pl("无效卡号！");
 		return;
@@ -88,15 +85,13 @@ void InQueue(LinkedQueue* lq)
 	}
 
 	// 入队
-	result = queue_push(lq, car);
-
-	if (result == 0)
+	if (queue_push(lq, car))
 	{
-		pl("入队失败！");
+		pl("卡号 %d 入队成功！", car);
 	}
 	else
 	{
-		pl("卡号 %d 入队成功！", car);
+		pl("入队失败！");
 	}
 }
 
@@ -122,15 +117,15 @@ void OutQueue(LinkedQueue* lq)
 {
 	// 卡号
 	QDataType car;
-	int res = queue_shift(lq, &car);
 
-	if (res == 0)
+	if (queue_shift(lq, &car))
+	{
+		pl("就诊的病人是：%d", car);
+	}
+	else
 	{
 		pl("当前没有病人排队！");
-		return;
 	}
-
-	pl("就诊的病人是：%d", car);
 }
 
 // 不再排队
@@ -160,6 +155,7 @@ void SeeDoctor(LinkedQueue* lq)
 	{
 		// 输入
 		size_t input = 0;
+		size_t sleep = 0;
 
 		// 大屏
 		pl("------ 大屏显示 ------");
@@ -189,6 +185,8 @@ void SeeDoctor(LinkedQueue* lq)
 		{
 			AllCompletes(lq);
 			DestroyQueue(lq);
+			get_sizet_input("就诊结束！按回车键退出", &sleep);
+			break;
 		}
 		else if (input == 5)
 		{
@@ -203,7 +201,6 @@ void SeeDoctor(LinkedQueue* lq)
 		}
 
 		// 暂停
-		size_t sleep = 0;
 		pl("");
 		get_sizet_input("^_^ 按下键回车继续操作...", &sleep);
 

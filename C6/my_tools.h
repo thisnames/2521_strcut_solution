@@ -33,11 +33,7 @@ int get_sizet_input(const char* prompt, size_t* output)
 	printf(prompt);
 
 	// 获取输入
-	if (fgets(input, sizeof(input), stdin) == NULL)
-	{
-		pl("读取输入失败");
-		return 0;
-	}
+	if (fgets(input, sizeof(input), stdin) == NULL) return 0;
 
 	// 解析输入
 	for (size_t i = 0; i < sizeof(input); i++)
