@@ -1,55 +1,50 @@
-#define MAIN
-
-#define PROGRAM_TITLE	"#===================== 病人看病模拟程序 =====================#"
-#define TTTLE_END_LINE	"#===========================================================#"
-
-#define CONTENT_1_TITLE	"1：排队"
-#define CONTENT_1		"\t——输入排队病人的就诊卡号，加入到病人排队的队列中。"
-
-#define CONTENT_2_TITLE "2：就诊"
-#define CONTENT_2		"\t——病人排队队列中最前面的病人就诊，并将其中队列中删除。"
-
-#define CONTENT_3_TITLE "3：查看排队"
-#define CONTENT_3		"\t——从队首到队尾输出所有的排队病人的就诊卡号。"
-
-#define CONTENT_4_TITLE "4：不再排队"
-#define CONTENT_4		"\t——余下的依次就诊从队首到队尾输出所有的排队病人的就诊卡号，看完病后，退出运行。"
-
-#define CONTENT_5_TITLE "5：下班"
-#define CONTENT_5		"\t——退出运行。"
+#define LANUAGE 0
+#define MAIN 1
+#define CL_SCREEN_CMD "cls"
 
 #include <stdio.h>
 
 #include "link_queue.h"
 #include "my_tools.h"
 
+// 选择语言文件
+#if LANUAGE == 0
+// 使用中文语言（默认）
+#include "ln_zh_cn.h"
+#elif LANUAGE == 1
+// 使用英文语言
+#include "ln_en_us.h"
+#else
+#include "ln_zh_cn.h"
+#endif
+
 // 清屏
 void clear_screen()
 {
-	system("cls");
+	system(CL_SCREEN_CMD);
 }
 
 // 打印标题
 void title()
 {
-	pl(PROGRAM_TITLE);
+	pl(program_title);
 
-	pl(CONTENT_1_TITLE);
-	pl(CONTENT_1);
+	pl(menu_title_1);
+	pl(menu_desct_1);
 
-	pl(CONTENT_2_TITLE);
-	pl(CONTENT_2);
+	pl(menu_title_2);
+	pl(menu_desct_2);
 
-	pl(CONTENT_3_TITLE);
-	pl(CONTENT_3);
+	pl(menu_title_3);
+	pl(menu_desct_3);
 
-	pl(CONTENT_4_TITLE);
-	pl(CONTENT_4);
+	pl(menu_title_4);
+	pl(menu_desct_4);
 
-	pl(CONTENT_5_TITLE);
-	pl(CONTENT_5);
+	pl(menu_title_5);
+	pl(menu_desct_5);
 
-	pl(TTTLE_END_LINE);
+	pl(program_tline);
 }
 
 // 排队的卡号是否已经在队列中排队；存在返回1，否则返回0
@@ -71,27 +66,27 @@ void InQueue(LinkedQueue* lq)
 	size_t car;
 
 	// 输入失败
-	if (!get_sizet_input("请输入你的就诊卡号：", &car))
+	if (!get_sizet_input(inqueue_prompt, &car))
 	{
-		pl("无效卡号！");
+		pl(inqueue_invcar);
 		return;
 	}
 
 	// 已存在
 	if (Exist(lq, car))
 	{
-		pl("卡号 %d 已经在队列中，无需重复排队！", car);
+		pl(inqueue_exist, car);
 		return;
 	}
 
 	// 入队
 	if (queue_push(lq, car))
 	{
-		pl("卡号 %d 入队成功！", car);
+		pl(inqueue_in, car);
 	}
 	else
 	{
-		pl("入队失败！");
+		pl(inqueue_fail);
 	}
 }
 
@@ -100,11 +95,11 @@ void DispQueue(LinkedQueue* lq)
 {
 	if (queue_empty(lq))
 	{
-		pl("当前没有人在排队！");
+		pl(diqueue_empty);
 		return;
 	}
 
-	printf("当前排队：");
+	printf(diqueue_queue);
 	//queue_foreach(lq, [](QDataType item)-> void { printf("%d ", item); });
 
 	for (QNode* p = lq->front; p; p = p->next) printf("%d ", p->data);
@@ -120,11 +115,11 @@ void OutQueue(LinkedQueue* lq)
 
 	if (queue_shift(lq, &car))
 	{
-		pl("就诊的病人是：%d", car);
+		pl(poqueue_out, car);
 	}
 	else
 	{
-		pl("当前没有病人排队！");
+		pl(poqueue_empty);
 	}
 }
 
@@ -133,7 +128,7 @@ void AllCompletes(LinkedQueue* lq)
 {
 	if (queue_empty(lq))
 	{
-		pl("当前没有人在排队！");
+		pl(unqueue_empty);
 		return;
 	}
 
@@ -158,7 +153,7 @@ void SeeDoctor(LinkedQueue* lq)
 		size_t sleep = 0;
 
 		// 大屏
-		pl("------ 大屏显示 ------");
+		pl("------ %s ------", option_plane);
 		DispQueue(lq);
 		pl("----------------------");
 
@@ -166,7 +161,7 @@ void SeeDoctor(LinkedQueue* lq)
 		title();
 
 		// 监听用户输入
-		get_sizet_input("请输入你的选择：", &input);
+		get_sizet_input(option_select, &input);
 		//pl("你的选择是：%d", input);
 
 		if (input == 1)
@@ -185,24 +180,24 @@ void SeeDoctor(LinkedQueue* lq)
 		{
 			AllCompletes(lq);
 			DestroyQueue(lq);
-			get_sizet_input("就诊结束！按回车键退出", &sleep);
+			get_sizet_input(option_end, &sleep);
 			break;
 		}
 		else if (input == 5)
 		{
 			// 退出
-			pl("程序退出！");
+			pl(option_exit);
 			if (input == 5) break;
 		}
 		else
 		{
-			pl(":( 输入错误，请重新输入！");
+			pl(":( %s", option_error);
 			pl("");
 		}
 
 		// 暂停
 		pl("");
-		get_sizet_input("^_^ 按下键回车继续操作...", &sleep);
+		get_sizet_input(option_continue, &sleep);
 
 		// 清除屏幕
 		clear_screen();

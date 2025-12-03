@@ -26,5 +26,11 @@
     <ClInclude Include="my_tools.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ln_zh_cn.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ln_en_us.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
