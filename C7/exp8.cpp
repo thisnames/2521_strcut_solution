@@ -23,24 +23,45 @@ void ReverseSqStr(SqString* str)
 若主串 S 长度小于子串 T 长度，返回 0；
 若子串 T 在主串 S 中连续出现（如 S="aaa"、T="aa"），需按重叠情况统计（此时结果为 2）。
 */
-int IncludeStr(LinkString* str, LinkString* child)
+int IncludeStr(LinkString* org, LinkString* temp)
 {
-	int strLen = StrLength(str);
-	int childLen = StrLength(child);
+	int orgl = StrLength(org);
+	int templ = StrLength(temp);
 
-	if (child->next == NULL || strLen < childLen) return 0;
-	if (StrEqual(str, child)) return 1;
+	//if (StrEqual(org, temp)) return 1;
+	if (temp->next == NULL || orgl < templ) return 0;
 
-	LinkString* current = str->next;
+	int count = 0;
 	int index = 0;
 
-	while (current != NULL)
+	LinkString* cur = org->next;
+	while (cur != NULL)
 	{
-		printf("%c", current->data);
+		if (orgl - index < templ) break;
 
-		current = current->next;
-		index+
+		int base = 1;
+		LinkString* next = cur;
+		LinkString* ttt = temp->next;
+		while (next != NULL && ttt != NULL)
+		{
+			if (next->data != ttt->data)
+			{
+				base = 0;
+				break;
+			}
+			next = next->next;
+			ttt = ttt->next;
+		}
+
+		index++;
+		cur = cur->next;
+
+		if (cur == NULL) break;
+
+		count += base;
 	}
+
+	return count;
 }
 
 void SqStringTest()
@@ -50,26 +71,44 @@ void SqStringTest()
 	char c1[] = "Hello World C++"; // 15
 
 	Assign(str, c1);
+	printf("字符串 str：");
 	DispStr(str);
 
 	// 取反
 	ReverseSqStr(&str);
+	printf("逆置 str：");
 	DispStr(str);
+}
+
+void LinkStringTest()
+{
+	LinkString* org;
+	LinkString* temp;
+	//char c1[] = "Hello C++, Hello C, Hello C#"; // 15
+	//char c2[] = "Hello"; // 15
+
+	char c1[] = "aaa"; // 15
+	char c2[] = "aa"; // 15
+
+	Assign(org, c1);
+	Assign(temp, c2);
+
+	printf("主串 S：");
+	DispStr(org);
+	printf("子串 T：");
+	DispStr(temp);
+
+	int count = IncludeStr(org, temp);
+	printf("现的总次数：%d\r\n", count);
 }
 
 int main()
 {
-	LinkString* str;
-	LinkString* temp;
-	char c1[] = "Hello C++, Hello C, Hello C#"; // 15
-	char c2[] = "Hello"; // 15
 
-	Assign(str, c1);
-	Assign(temp, c2);
-	DispStr(str);
-	DispStr(temp);
-
-	IncludeStr(str, temp);
+	printf("（1）-------------------------\r\n");
+	SqStringTest();
+	printf("（2）-------------------------\r\n");
+	LinkStringTest();
 
 	return 0;
 }
